@@ -1,4 +1,6 @@
 from __future__ import print_function
+
+import asyncio
 import pickle
 import os.path
 from datetime import datetime, timedelta
@@ -6,17 +8,31 @@ from time import sleep
 from typing import List, Tuple, Iterable
 from hashlib import sha1
 
-from telebot import TeleBot
 from googleapiclient.discovery import build, Resource
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import requests
+from requests.exceptions import ConnectionError
+from aiohttp import BasicAuth
+from aiogram import Bot, Dispatcher
 
+from config import BOT_TOKEN, PROXY_HOST, PROXY_PASS, PROXY_PORT, PROXY_USERNAME
 from models import Row, TableCheck
-from config import BOT_TOKEN, SAMPLE_SPREADSHEET_ID
+from config import SAMPLE_SPREADSHEET_ID
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # SAMPLE_RANGE_NAME = 'Class Data!A2:E'
+
+try:
+    PROXY_AUTH = None
+    PROXY_URL = None
+    response = requests.get('https://api.telegram.org')
+except ConnectionError as e:
+    PROXY_URL = f"socks5://{PROXY_HOST}:{PROXY_PORT}"
+    PROXY_AUTH = BasicAuth(login=PROXY_USERNAME, password=PROXY_PASS)
+bot = Bot(token=BOT_TOKEN, proxy=PROXY_URL, proxy_auth=PROXY_AUTH)
+dp = Dispatcher(bot)
 
 
 def get_credentials():
@@ -94,8 +110,7 @@ def save_table_state(table: List[List[str]]):
 
 
 def run_loop(service: Resource) -> None:
-    interval = 1
-    bot = TeleBot(BOT_TOKEN)
+    interval = 3
     while True:
         sleep(interval)
 
@@ -124,10 +139,19 @@ def run_loop(service: Resource) -> None:
 
             if created:
                 message_text = f"""
-                    **Отметка времени:** {row[0]},
+                    **Время** {row[0]}
+
                     **Наименование салона:** {row[1]}
+                    **Менеджер:** {row[2]}
+                    **Количество новых клиентов:** {row[3]}
+                    **Количество новых просчётов:** {row[4]}
+                    **Количество повторных просчётов:** {row[5]}
+                    **Количество розданных визиток:** {row[6]}
+                    **Количество продаж:** {row[7]}
+                    **Выручка:** {row[8]}
                 """
-                bot.send_message(5844335, message_text)
+                loop = asyncio.get_event_loop()
+                loop.run_until_complete(bot.send_message(-264599672, message_text, parse_mode='Markdown'))
 
 
 def main():
