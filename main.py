@@ -16,7 +16,7 @@ from requests.exceptions import ConnectionError
 from aiohttp import BasicAuth
 from aiogram import Bot, Dispatcher
 
-from config import BOT_TOKEN, PROXY_HOST, PROXY_PASS, PROXY_PORT, PROXY_USERNAME
+from config import BOT_TOKEN, PROXY_HOST, PROXY_PASS, PROXY_PORT, PROXY_USERNAME, DESTINATION_CHANNEL
 from models import Row, TableCheck
 from config import SAMPLE_SPREADSHEET_ID
 
@@ -151,7 +151,7 @@ def run_loop(service: Resource) -> None:
                     **Выручка:** {row[8]}
                 """
                 loop = asyncio.get_event_loop()
-                loop.run_until_complete(bot.send_message(-264599672, message_text, parse_mode='Markdown'))
+                loop.run_until_complete(bot.send_message(DESTINATION_CHANNEL, message_text, parse_mode='Markdown'))
 
 
 def main():
