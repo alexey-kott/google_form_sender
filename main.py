@@ -125,17 +125,20 @@ def run_loop(service: Resource) -> None:
         for i, row in enumerate(table):
             row_hash = calc_hash(row)
 
-            saved_row, created = Row.get_or_create(index=i,
-                                                   creation_dt=row[0],
-                                                   salon=row[1],
-                                                   manager=row[2],
-                                                   new_clients=row[3],
-                                                   new_calculation=row[4],
-                                                   repeated_calculation=row[5],
-                                                   distributed_cutaways=row[6],
-                                                   sales=row[7],
-                                                   revenue=row[8],
-                                                   row_hash=row_hash)
+            try:
+                saved_row, created = Row.get_or_create(index=i,
+                                                       creation_dt=row[0],
+                                                       salon=row[1],
+                                                       manager=row[2],
+                                                       new_clients=row[3],
+                                                       new_calculation=row[4],
+                                                       repeated_calculation=row[5],
+                                                       distributed_cutaways=row[6],
+                                                       sales=row[7],
+                                                       revenue=row[8],
+                                                       row_hash=row_hash)
+            except:
+                continue
 
             if created:
                 message_text = f"""
