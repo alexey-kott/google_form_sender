@@ -141,15 +141,15 @@ def run_loop(service: Resource) -> None:
                 continue
 
             if created:
-                message_text = f"*Время:* {row[0]}\n" \
-                    f"*Наименование салона:* {row[1]}\n" \
-                    f"*Менеджер:* {row[2]}\n" \
-                    f"*Количество новых клиентов:* {row[3]}\n" \
-                    f"*Количество новых просчётов:* {row[4]}\n" \
-                    f"*Количество повторных просчётов:* {row[5]}\n" \
-                    f"*Количество розданных визиток:* {row[6]}\n" \
-                    f"*Количество продаж:* {row[7]}\n" \
-                    f"*Выручка:* {row[8]}"
+                message_text = f"Время: *{row[0]}*\n" \
+                    f"Наименование салона: *{row[1]}*\n" \
+                    f"Менеджер: *{row[2]}*\n" \
+                    f"Количество новых клиентов: *{row[3]}*\n" \
+                    f"Количество новых просчётов: *{row[4]}*\n" \
+                    f"Количество повторных просчётов: *{row[5]}*\n" \
+                    f"Количество розданных визиток: *{row[6]}*\n" \
+                    f"Количество продаж: *{row[7]}*\n" \
+                    f"Выручка: *{row[8]}*"
                 loop = asyncio.get_event_loop()
                 loop.run_until_complete(bot.send_message(DESTINATION_CHANNEL, message_text, parse_mode='Markdown'))
 
